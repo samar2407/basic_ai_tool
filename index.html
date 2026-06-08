@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Tool</title>
+  <style>
+    body { font-family: sans-serif; max-width: 700px; margin: 60px auto; padding: 0 20px; }
+    h1 { font-size: 24px; margin-bottom: 24px; }
+    select, textarea, button { width: 100%; padding: 10px; margin-top: 12px; font-size: 15px; box-sizing: border-box; }
+    textarea { height: 120px; resize: vertical; }
+    button { background: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; margin-top: 16px; }
+    button:hover { background: #1d4ed8; }
+    #output { margin-top: 24px; background: #f3f4f6; padding: 16px; border-radius: 8px; white-space: pre-wrap; min-height: 60px; }
+    #loading { display: none; color: #6b7280; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <h1>AI Tool</h1>
+
+  <select id="feature">
+    <option value="1">Explain a Concept</option>
+    <option value="2">Summarize Text</option>
+    <option value="3">Generate Quiz Questions</option>
+  </select>
+
+  <textarea id="userInput" placeholder="Enter your text here..."></textarea>
+
+  <button onclick="generate()">Generate</button>
+
+  <p id="loading">Thinking...</p>
+
+  <div id="output"></div>
+
+  <script>
+    async function generate() {
+      const choice = document.getElementById("feature").value;
+      const userInput = document.getElementById("userInput").value;
+      const output = document.getElementById("output");
+      const loading = document.getElementById("loading");
+
+      if (!userInput.trim()) {
+        output.textContent = "Please enter some text.";
+        return;
+      }
+
+      loading.style.display = "block";
+      output.textContent = "";
+
+      const res = await fetch("/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ choice, user_input: userInput })
+      });
+
+      const data = await res.json();
+      loading.style.display = "none";
+      output.textContent = data.response || data.error;
+    }
+  </script>
+</body>
+</html>
