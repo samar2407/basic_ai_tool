@@ -36,50 +36,74 @@
   <div id="history-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
 
   <script>
-    let history=[];
-    async function generate() {
-      const choice = document.getElementById("feature").value;
-      const userInput = document.getElementById("userInput").value;
-      const output = document.getElementById("output");
-      const loading = document.getElementById("loading");
 
-      if (!userInput.trim()) {
-        output.textContent = "Please enter some text.";
-        return;
+
+  let history = JSON.parse(localStorage.getItem("chatHistory") || "[]");
+
+  
+  window.onload = function () {
+    const historyList = document.getElementById("history-list");
+    history.forEach(function (item, i) {
+      if (item.role === "user") {
+        const reply = history[i + 1]?.content || "";
+        const entry = document.createElement("div");
+        entry.style = "background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; font-size: 14px;";
+        entry.innerHTML = `
+          <p><strong>You:</strong> ${item.content}</p>
+          <p style="margin-top: 6px; color: #374151;"><strong>AI:</strong> ${reply}</p>
+        `;
+        historyList.appendChild(entry);
       }
+    });
+  };
 
-      loading.style.display = "block";
-      output.textContent = "";
+  async function generate() {
+    const choice = document.getElementById("feature").value;
+    const userInput = document.getElementById("userInput").value;
+    const output = document.getElementById("output");
+    const loading = document.getElementById("loading");
 
-      const res = await fetch("/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ choice, user_input: userInput, history })
-      });
-
-      const data = await res.json();
-      loading.style.display = "none";
-      output.textContent = data.response || data.error;
-      if (data.error) {
-      output.textContent = data.error;
+    if (!userInput.trim()) {
+      output.textContent = "Please enter some text.";
       return;
     }
+
+    loading.style.display = "block";
+    output.textContent = "";
+
+    const res = await fetch("/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ choice, user_input: userInput, history })
+    });
+
+    const data = await res.json();
+    loading.style.display = "none";
+
     const reply = data.response || data.error;
     output.textContent = reply;
+
+    
+    history.push({ role: "user", content: userInput });
+    history.push({ role: "assistant", content: reply });
+    localStorage.setItem("chatHistory", JSON.stringify(history));
+
     
     const historyList = document.getElementById("history-list");
     const entry = document.createElement("div");
-
     entry.style = "background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; font-size: 14px;";
     entry.innerHTML = `
       <p><strong>You:</strong> ${userInput}</p>
       <p style="margin-top: 6px; color: #374151;"><strong>AI:</strong> ${reply}</p>
     `;
     historyList.appendChild(entry);
-    }
-    function clearChat() {
+  }
+
+  function clearHistory() {
     history = [];
-    document.getElementById("output").innerHTML = "";
+    localStorage.removeItem("chatHistory");
+    document.getElementById("history-list").innerHTML = "";
+    document.getElementById("output").textContent = "";
   }
   </script>
 </body>
