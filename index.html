@@ -31,6 +31,20 @@ body.dark #history-list > div {
   border-color: #334155 !important;
   color: #e2e8f0 !important;
 }
+.history-entry {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
+  background: #f9fafb;
+  color: #111827;
+}
+
+body.dark .history-entry {
+  background: #1e293b;
+  border-color: #334155;
+  color: #e2e8f0;
+}
   </style>
 </head>
 <body>
@@ -68,7 +82,7 @@ body.dark #history-list > div {
       if (item.role === "user") {
         const reply = history[i + 1]?.content || "";
         const entry = document.createElement("div");
-        entry.style = "background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; font-size: 14px;";
+        entry.className = "history-entry";
         entry.innerHTML = `
           <p><strong>You:</strong> ${item.content}</p>
           <p style="margin-top: 6px; color: #374151;"><strong>AI:</strong> ${reply}</p>
