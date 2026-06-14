@@ -4,4 +4,4 @@ groq
 gunicorn
 python-dotenv
 numpy
-google-generativeai
+google-genai
