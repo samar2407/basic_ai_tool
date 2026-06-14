@@ -51,6 +51,7 @@ def cloudflare_chat(model_id, messages):
         timeout=60
     )
     result = response.json()
+    print("CLOUDFLARE RESPONSE:", result)
     return result["result"]["response"]
 
 def cloudflare_embed(text):
