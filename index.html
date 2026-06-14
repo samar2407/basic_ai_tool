@@ -5,18 +5,17 @@
   <title>AI Tool</title>
   <style>
     * { box-sizing: border-box; }
- 
+
     body {
       font-family: sans-serif;
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
       background: #ffffff;
       color: #111827;
       display: flex;
       min-height: 100vh;
     }
- 
-    
+
+    /* Sidebar */
     #sidebar {
       width: 280px;
       min-width: 280px;
@@ -28,37 +27,37 @@
       flex-direction: column;
       gap: 12px;
     }
- 
-    #sidebar h2 {
-      font-size: 15px;
-      font-weight: 700;
-      margin: 0 0 4px 0;
+
+    #sidebar h2 { font-size: 15px; font-weight: 700; margin: 0 0 4px 0; }
+
+    #searchInput {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid #e5e7eb;
+      font-size: 13px;
+      background: #ffffff;
+      color: #111827;
     }
- 
-  .history-entry {
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 10px 12px;
-  font-size: 13px;
-  background: #ffffff;
-  color: #111827;
-  cursor: pointer;
-}
 
-.history-entry:hover {
-  border-color: #2563eb;
-}
+    .history-entry {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 13px;
+      background: #ffffff;
+      color: #111827;
+      cursor: pointer;
+    }
 
-body.dark .history-entry:hover {
-  border-color: #60a5fa;
-}
- 
+    .history-entry:hover { border-color: #2563eb; }
+
     .history-entry .you {
       font-weight: 600;
       margin-bottom: 4px;
       color: #1d4ed8;
     }
- 
+
     .history-entry .ai-text {
       color: #374151;
       display: -webkit-box;
@@ -66,16 +65,23 @@ body.dark .history-entry:hover {
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
- 
-    
-    #main {
-      flex: 1;
-      padding: 48px 40px;
-      max-width: 720px;
-    }
- 
+
+    /* Main */
+    #main { flex: 1; padding: 48px 40px; max-width: 720px; }
+
     h1 { font-size: 24px; margin-bottom: 8px; }
- 
+
+    label { font-size: 13px; color: #6b7280; display: block; margin-top: 12px; }
+
+    select, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 4px;
+      font-size: 15px;
+    }
+
+    textarea { height: 120px; resize: vertical; }
+
     #themeBtn {
       margin-bottom: 20px;
       background: #374151;
@@ -85,39 +91,25 @@ body.dark .history-entry:hover {
       padding: 6px 14px;
       cursor: pointer;
       font-size: 13px;
+      width: auto;
     }
- 
-    select, textarea, button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 12px;
-      font-size: 15px;
-    }
- 
-    textarea { height: 120px; resize: vertical; }
- 
+
     #generateBtn {
-      background: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 16px;
+      background: #2563eb; color: white;
+      border: none; border-radius: 6px;
+      cursor: pointer; margin-top: 16px;
     }
- 
+
     #generateBtn:hover { background: #1d4ed8; }
- 
+
     #clearBtn {
-      background: #6b7280;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 8px;
+      background: #6b7280; color: white;
+      border: none; border-radius: 6px;
+      cursor: pointer; margin-top: 8px;
     }
- 
+
     #clearBtn:hover { background: #4b5563; }
- 
+
     #output {
       margin-top: 24px;
       background: #f3f4f6;
@@ -127,74 +119,70 @@ body.dark .history-entry:hover {
       min-height: 60px;
       color: #111827;
     }
- 
+
     #loading { display: none; color: #6b7280; margin-top: 12px; }
- 
-    
+
+    /* Dark mode */
     body.dark { background: #0f172a; color: #f1f5f9; }
- 
-    body.dark #sidebar {
-      background: #1e293b;
-      border-color: #334155;
-    }
- 
-    body.dark .history-entry {
-      background: #0f172a;
-      border-color: #334155;
-      color: #f1f5f9;
-    }
- 
+    body.dark #sidebar { background: #1e293b; border-color: #334155; }
+    body.dark #searchInput { background: #0f172a; color: #f1f5f9; border-color: #334155; }
+    body.dark .history-entry { background: #0f172a; border-color: #334155; color: #f1f5f9; }
+    body.dark .history-entry:hover { border-color: #60a5fa; }
     body.dark .history-entry .you { color: #60a5fa; }
- 
     body.dark .history-entry .ai-text { color: #cbd5e1; }
- 
-    body.dark select,
-    body.dark textarea {
-      background: #1e293b;
-      color: #f1f5f9;
-      border: 1px solid #334155;
-    }
- 
-    body.dark #output {
-      background: #1e293b;
-      color: #f1f5f9;
-    }
- 
+    body.dark select, body.dark textarea { background: #1e293b; color: #f1f5f9; border: 1px solid #334155; }
+    body.dark #output { background: #1e293b; color: #f1f5f9; }
     body.dark #loading { color: #94a3b8; }
+    body.dark label { color: #94a3b8; }
   </style>
 </head>
 <body>
- 
+
   <!-- Sidebar -->
   <div id="sidebar">
     <h2>💬 Chat History</h2>
+    <input id="searchInput" type="text" placeholder="🔍 Search history..."
+      oninput="searchHistory()">
     <div id="history-list" style="display:flex;flex-direction:column;gap:10px;"></div>
   </div>
- 
+
   <!-- Main -->
   <div id="main">
     <h1>AI Tool</h1>
     <button onclick="toggleTheme()" id="themeBtn">🌙 Dark Mode</button>
- 
+
+    <label>Provider</label>
+    <select id="provider" onchange="updateModels()">
+      <option value="groq">Groq</option>
+      <option value="gemini">Gemini</option>
+    </select>
+
+    <label>Model</label>
+    <select id="model">
+      <option value="llama-3.3-70b">Llama 3.3 70b</option>
+      <option value="llama-3.1-8b">Llama 3.1 8b</option>
+      <option value="mixtral-8x7b">Mixtral 8x7b</option>
+    </select>
+
+    <label>Feature</label>
     <select id="feature">
       <option value="1">Explain a Concept</option>
       <option value="2">Summarize Text</option>
       <option value="3">Generate Quiz Questions</option>
-      <option value="4">Proffessional Rewrite</option>
     </select>
- 
+
     <textarea id="userInput" placeholder="Enter your text here..."></textarea>
- 
+
     <button id="generateBtn" onclick="generate()">Generate</button>
     <button id="clearBtn" onclick="clearHistory()">Clear History</button>
- 
+
     <p id="loading">Thinking...</p>
     <div id="output"></div>
   </div>
- 
+
   <script>
     let history = JSON.parse(localStorage.getItem("chatHistory") || "[]");
- 
+
     window.onload = function () {
       renderHistory();
       if (localStorage.getItem("theme") === "dark") {
@@ -202,11 +190,27 @@ body.dark .history-entry:hover {
         document.getElementById("themeBtn").textContent = "☀️ Light Mode";
       }
     };
- 
+
+    function updateModels() {
+      const provider = document.getElementById("provider").value;
+      const modelSelect = document.getElementById("model");
+      const groqModels = [
+        { value: "llama-3.3-70b", label: "Llama 3.3 70b" },
+        { value: "llama-3.1-8b",  label: "Llama 3.1 8b" },
+        { value: "mixtral-8x7b",  label: "Mixtral 8x7b" },
+      ];
+      const geminiModels = [
+        { value: "gemini-2.0-flash", label: "Gemini 2.0 Flash" },
+        { value: "gemini-1.5-flash", label: "Gemini 1.5 Flash" },
+        { value: "gemini-1.5-pro",   label: "Gemini 1.5 Pro" },
+      ];
+      const models = provider === "gemini" ? geminiModels : groqModels;
+      modelSelect.innerHTML = models.map(m =>
+        `<option value="${m.value}">${m.label}</option>`
+      ).join("");
+    }
+
     function renderHistory() {
-      const historyList = document.getElementById("history-list");
-      historyList.innerHTML = "";
- 
       const pairs = [];
       for (let i = 0; i < history.length; i += 2) {
         if (history[i] && history[i + 1]) {
@@ -214,62 +218,97 @@ body.dark .history-entry:hover {
         }
       }
       pairs.reverse();
- 
+      renderHistoryEntries(pairs);
+    }
+
+    function renderHistoryEntries(pairs) {
+      const historyList = document.getElementById("history-list");
+      historyList.innerHTML = "";
+      if (pairs.length === 0) {
+        historyList.innerHTML = `<p style="font-size:13px;color:#9ca3af;">No results.</p>`;
+        return;
+      }
       pairs.forEach(function (pair) {
         const entry = document.createElement("div");
         entry.className = "history-entry";
         entry.innerHTML = `
-        <div class="you">You: ${pair.you}</div>
-        <div class="ai-text">AI: ${pair.ai}</div>
-     `;
-  entry.onclick = function () {
-  document.getElementById("userInput").value = pair.you;
-  document.getElementById("output").textContent = pair.ai;
-};
-historyList.appendChild(entry);
+          <div class="you">You: ${pair.you}</div>
+          <div class="ai-text">AI: ${pair.ai}</div>
+        `;
+        entry.onclick = function () {
+          document.getElementById("userInput").value = pair.you;
+          document.getElementById("output").textContent = pair.ai;
+        };
+        historyList.appendChild(entry);
       });
     }
- 
+
+    async function searchHistory() {
+      const query = document.getElementById("searchInput").value.trim();
+      if (!query) { renderHistory(); return; }
+
+      const pairs = [];
+      for (let i = 0; i < history.length; i += 2) {
+        if (history[i] && history[i + 1]) {
+          pairs.push({ you: history[i].content, ai: history[i + 1].content });
+        }
+      }
+
+      if (pairs.length === 0) return;
+
+      const res = await fetch("/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query, history: pairs })
+      });
+
+      const data = await res.json();
+      renderHistoryEntries(data.results || []);
+    }
+
     async function generate() {
       const choice = document.getElementById("feature").value;
       const userInput = document.getElementById("userInput").value;
       const output = document.getElementById("output");
       const loading = document.getElementById("loading");
- 
-      if (!userInput.trim()) {
-        output.textContent = "Please enter some text.";
-        return;
-      }
- 
+
+      if (!userInput.trim()) { output.textContent = "Please enter some text."; return; }
+
       loading.style.display = "block";
       output.textContent = "";
- 
+
       const res = await fetch("/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ choice, user_input: userInput, history })
+        body: JSON.stringify({
+          choice,
+          user_input: userInput,
+          history,
+          provider: document.getElementById("provider").value,
+          model: document.getElementById("model").value
+        })
       });
- 
+
       const data = await res.json();
       loading.style.display = "none";
- 
+
       const reply = data.response || data.error;
       output.textContent = reply;
- 
+
       history.push({ role: "user", content: userInput });
       history.push({ role: "assistant", content: reply });
       localStorage.setItem("chatHistory", JSON.stringify(history));
- 
       renderHistory();
     }
- 
+
     function clearHistory() {
       history = [];
       localStorage.removeItem("chatHistory");
-      document.getElementById("history-list").innerHTML = "";
       document.getElementById("output").textContent = "";
+      document.getElementById("searchInput").value = "";
+      renderHistory();
     }
- 
+
     function toggleTheme() {
       const isDark = document.body.classList.toggle("dark");
       localStorage.setItem("theme", isDark ? "dark" : "light");
@@ -278,4 +317,3 @@ historyList.appendChild(entry);
   </script>
 </body>
 </html>
- 
