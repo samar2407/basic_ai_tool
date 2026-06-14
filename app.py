@@ -1,4 +1,3 @@
-
 from dotenv import load_dotenv
 load_dotenv()
 import os
@@ -6,13 +5,13 @@ import numpy as np
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from groq import Groq
-import google.generativeai as genai
+from google import genai
 
 app = Flask(__name__)
 CORS(app)
 
-client = Groq(api_key=os.environ.get("groq_api_key"))
-genai.configure(api_key=os.environ.get("GOOGLE_API_KEY"))
+groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+gemini_client = genai.Client(api_key=os.environ.get("GOOGLE_API_KEY"))
 
 MODELS = {
     "groq": {
@@ -54,7 +53,7 @@ def generate():
 
     if choice not in system_prompts:
         return jsonify({"error": "Invalid choice."}), 400
-    
+
     system = system_prompts[choice]
 
     try:
@@ -63,21 +62,23 @@ def generate():
             messages = [{"role": "system", "content": system}]
             messages.extend(history)
             messages.append({"role": "user", "content": user_input})
-            response = client.chat.completions.create(model=model_id, messages=messages)
+            response = groq_client.chat.completions.create(model=model_id, messages=messages)
             reply = response.choices[0].message.content
 
         elif provider == "gemini":
             model_id = MODELS["gemini"].get(model_key, "gemini-2.0-flash")
-            model = genai.GenerativeModel(model_name=model_id, system_instruction=system)
 
-            # convert history to gemini format
-            gemini_history = []
+            contents = []
             for msg in history:
                 role = "user" if msg["role"] == "user" else "model"
-                gemini_history.append({"role": role, "parts": [msg["content"]]})
+                contents.append({"role": role, "parts": [{"text": msg["content"]}]})
+            contents.append({"role": "user", "parts": [{"text": user_input}]})
 
-            chat = model.start_chat(history=gemini_history)
-            response = chat.send_message(user_input)
+            response = gemini_client.models.generate_content(
+                model=model_id,
+                contents=contents,
+                config={"system_instruction": system}
+            )
             reply = response.text
 
         else:
@@ -102,12 +103,11 @@ def search():
 
         vecs = []
         for text in all_texts:
-            result = genai.embed_content(
+            result = gemini_client.models.embed_content(
                 model="models/text-embedding-004",
-                content=text,
-                task_type="retrieval_query"
+                contents=text
             )
-            vecs.append(np.array(result["embedding"]))
+            vecs.append(np.array(result.embeddings[0].values))
 
         query_vec = vecs[0]
         scores = []
